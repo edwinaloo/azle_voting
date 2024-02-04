@@ -40,7 +40,7 @@ export default Canister({
     if (!votingItem.votes.has(verifiedCaller.toText())) {
       votingItem.votes.set(verifiedCaller.toText(), 1);
     } else {
-      votingItem.votes.set(verifiedCaller.toText(), votingItem.votes.get(verifiedCaller.toText()) + 1);
+        const votingItem = votingItems.get(itemId) ?? { votes: new Map() };
     }
 
     votingItems.set(itemId, votingItem);
@@ -74,7 +74,7 @@ export default Canister({
   }),
 
   // Function to create a new voting item
-  createVotingItem: update([text, text, text[], int64, int64], Void, (itemId, itemName, options, startTime, endTime) => {
+  createVotingItem: update([text, text, text, int64, int64], Void, (itemId, itemName, options, startTime, endTime) => {
     votingItems.set(itemId, {
       itemId: itemId,
       itemName: itemName,
