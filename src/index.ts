@@ -29,7 +29,9 @@ export default Canister({
       throw new Error("Voting item not found");
     }
 
-    if (votingItem.canceled || Date.now() / 1000 < votingItem.startTime || Date.now() / 1000 >= votingItem.endTime) {
+    const currentTime = Date.now() / 1000; //Convert milliseconds to seconds
+
+    if (votingItem.canceled || currentTime < votingItem.startTime || currentTime >= votingItem.endTime) {
       throw new Error("Invalid voting period");
     }
 
@@ -40,7 +42,8 @@ export default Canister({
     if (!votingItem.votes.has(verifiedCaller.toText())) {
       votingItem.votes.set(verifiedCaller.toText(), 1);
     } else {
-        const votingItem = votingItems.get(itemId) ?? { votes: new Map() };
+        const currentVoteCount = votingItem.votes.get(verifiedCaller.toText()) || 0;
+        votingItem.votes.set(verifiedCaller.toText(), currentVoteCount + 1);
     }
 
     votingItems.set(itemId, votingItem);
@@ -54,7 +57,9 @@ export default Canister({
       throw new Error("Voting item not found");
     }
 
-    if (votingItem.canceled || Date.now() / 1000 < votingItem.endTime) {
+    const currentTime = Date.now() / 1000; //Convert milliseconds to seconds
+
+    if (votingItem.canceled || currentTime < votingItem.endTime) {
       throw new Error("Voting period not ended");
     }
 
